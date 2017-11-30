@@ -77,7 +77,7 @@ void setup() {
   display.begin(SSD1306_SWITCHCAPVCC); // Initialize the OLED
   display.clearDisplay(); // Clear the display's internal memory
   updateDisplay(0); // 1 = connecting
-  Serial1.begin(2625000); // 2625000
+  Serial1.begin(2625000);
   pinMode(WIZ850_RESET_PIN, OUTPUT);
   digitalWrite(WIZ850_RESET_PIN, LOW);    // begin reset the WIZ850io
   pinMode(WIZ850_CS_PIN, OUTPUT);
