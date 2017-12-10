@@ -10,9 +10,6 @@ ArCOM Serial1COM(Serial1); // Creates an ArCOM object called Serial1COM, wrappin
 #define FirmwareVersion 1
 const uint32_t MessageBufSize = 32000;
 
-// Module setup
-char moduleName[] = "Ethernet"; // Name of module for manual override UI and state machine assembler
-
 // Ethernet
 #define port 11258
 
@@ -90,13 +87,6 @@ void setup() {
   }
   server.begin(); // Start the Ethernet server
   // Print IP and status to OLED
-  for (byte i = 0; i < 3; i++) {
-    // print the value of each byte of the IP address:
-    Serial.print(ip[i], DEC);
-    Serial.print(".");
-  }
-  Serial.print(ip[3], DEC);
-  Serial.println(" ");
   timeOnline = 0; timeSinceDisplayOn = 0; displayActive = true;
   updateDisplay(1); // 1 = ip display
 }
@@ -139,9 +129,6 @@ void loop() {
    if (Serial1COM.available() > 0) {
     opByte = Serial1COM.readByte();
     switch (opByte) {
-      case 255:
-        returnModuleInfo();
-      break;
       case 'R': // Relay message to client
         nBytes2Relay = Serial1COM.readUint32();
         nFullReads = (unsigned long)(floor((double)nBytes2Relay/(double)MessageBufSize));
@@ -277,12 +264,4 @@ void clearText(byte yPos, byte xPos, byte nChar) {
     }
     display.display();
     display.setTextColor(WHITE);
-}
-
-void returnModuleInfo() {
-  Serial1COM.writeByte(65); // Acknowledge
-  Serial1COM.writeUint32(FirmwareVersion); // 4-byte firmware version
-  Serial1COM.writeByte(sizeof(moduleName)-1); // Length of module name
-  Serial1COM.writeCharArray(moduleName, sizeof(moduleName)-1); // Module name
-  Serial1COM.writeByte(0); // 1 if more info follows, 0 if not
 }
